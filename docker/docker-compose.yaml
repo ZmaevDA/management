@@ -1,0 +1,16 @@
+version: '3'
+services:
+  db:
+    image: postgres:13
+    container_name: management-postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: management-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
