@@ -1,6 +1,6 @@
-version: '3'
+version: '3.1'
 services:
-  db:
+  management-postgres:
     image: postgres:13
     container_name: management-postgres
     environment:
@@ -12,5 +12,65 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  keycloak-postgres:
+    image: postgres:14-alpine
+    container_name: keycloak-postgres
+    restart: on-failure
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    healthcheck:
+      test: pg_isready -d postgres
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    ports:
+      - ${KC_POSTGRES_PORT_MAPPING:-5435}:5432
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    networks:
+      - keycloak-network
+
+  keycloak:
+    image: custom-keycloak:latest
+    container_name: keycloak
+    environment:
+      KC_DB_URL: jdbc:postgresql://keycloak-postgres:5432/postgres
+      KC_DB_USERNAME: admin
+      KC_DB_PASSWORD: admin
+      KC_DB_SCHEMA: public
+      KC_FEATURES: import_export
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - '8282:8080'
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    depends_on:
+      keycloak-postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://0.0.0.0:8080/realms/master" ]
+      interval: 30s
+      retries: 3
+      timeout: 5s
+    networks:
+      - keycloak-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - type: bind
+        source: keycloak/import/realm-export.json
+        target: /opt/keycloak/data/import/realm-export.json
+        read_only: true
+
 volumes:
   db_data:
+
+networks:
+  keycloak-network:

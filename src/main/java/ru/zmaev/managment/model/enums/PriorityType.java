@@ -1,4 +1,7 @@
 package ru.zmaev.managment.model.enums;
 
-public class PriorityType {
+public enum PriorityType {
+    HIGH,
+    MEDIUM,
+    LOW
 }

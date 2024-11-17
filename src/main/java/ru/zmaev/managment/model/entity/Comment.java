@@ -6,8 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "comment")
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comment_id_seq")
-    @SequenceGenerator(name = "comment_id_seq", sequenceName = "comment_id_seq")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @ManyToOne
@@ -15,7 +14,7 @@ public class Comment {
     private Task task;
 
     @ManyToOne
-    @JoinColumn(name = "author_id", referencedColumnName = "author_id")
+    @JoinColumn(name = "author_id", referencedColumnName = "id")
     private User author;
 
     @Column(name = "content")
