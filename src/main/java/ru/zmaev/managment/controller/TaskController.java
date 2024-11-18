@@ -63,7 +63,7 @@ public class TaskController implements TaskOpenApi {
     @Override
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<TaskResponse> update(@PathVariable UUID id, @RequestParam TaskUpdateRequest request) {
+    public ResponseEntity<TaskResponse> update(@PathVariable UUID id, @RequestBody TaskUpdateRequest request) {
         return ResponseEntity.ok(taskService.update(id, request));
     }
 

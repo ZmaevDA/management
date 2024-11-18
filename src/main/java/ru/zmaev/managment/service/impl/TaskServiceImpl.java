@@ -128,6 +128,8 @@ public class TaskServiceImpl implements TaskService {
         checkAuthorAssignerAdminAccessOrThrow(presentedTask);
         Task task = taskMapper.toEntity(request);
         task.setId(id);
+        task.setAuthor(presentedTask.getAuthor());
+        task.setAssignee(presentedTask.getAssignee());
         Task savedTask = taskRepository.save(task);
         return taskMapper.toResponse(savedTask);
     }
