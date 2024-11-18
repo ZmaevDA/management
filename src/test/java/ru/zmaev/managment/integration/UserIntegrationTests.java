@@ -1,6 +1,5 @@
 package ru.zmaev.managment.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +11,10 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.zmaev.managment.config.PostgresTestContainer;
+import ru.zmaev.managment.service.impl.UserServiceImpl;
 import ru.zmaev.managment.util.IntegrationTestAuthUtils;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -28,9 +27,6 @@ public class UserIntegrationTests extends PostgresTestContainer {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @BeforeEach
     public void beforeEach() {
@@ -53,6 +49,7 @@ public class UserIntegrationTests extends PostgresTestContainer {
                         .param("pageSize", String.valueOf(pageSize))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[2].id").value(userId))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
@@ -85,6 +82,7 @@ public class UserIntegrationTests extends PostgresTestContainer {
         mockMvc.perform(MockMvcRequestBuilders.get(USER_API_PATH + "/me")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(userId))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
@@ -97,6 +95,7 @@ public class UserIntegrationTests extends PostgresTestContainer {
         mockMvc.perform(MockMvcRequestBuilders.get(USER_API_PATH + "/" + userId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(userId))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
@@ -109,6 +108,7 @@ public class UserIntegrationTests extends PostgresTestContainer {
         mockMvc.perform(MockMvcRequestBuilders.get(USER_API_PATH + "/" + unrepresentedUserId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.type").value(UserServiceImpl.USER_NOT_FOUND))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
