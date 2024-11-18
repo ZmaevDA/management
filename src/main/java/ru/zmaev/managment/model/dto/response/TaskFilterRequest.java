@@ -18,5 +18,5 @@ public class TaskFilterRequest {
     private StatusType status;
     private PriorityType priority;
     private UUID authorId;
-    private UUID assignerId;
+    private UUID assigneeId;
 }

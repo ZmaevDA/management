@@ -1,10 +1,11 @@
 package ru.zmaev.managment.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.zmaev.managment.controller.openApi.TaskOpenApi;
 import ru.zmaev.managment.model.dto.request.TaskCreateRequest;
@@ -20,29 +21,31 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/tasks")
 @RequiredArgsConstructor
+@Validated
 public class TaskController implements TaskOpenApi {
     private final TaskServiceImpl taskService;
 
     @Override
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<Page<TaskResponse>> loadAll(@ModelAttribute TaskFilterRequest filter,
-                                                      @RequestParam(defaultValue = "0") int pageNumber,
-                                                      @RequestParam(defaultValue = "10") int pageSize) {
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<Page<TaskResponse>> loadAll(
+            @ModelAttribute TaskFilterRequest filter,
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize) {
         return ResponseEntity.ok(taskService.loadAll(filter, pageNumber, pageSize));
     }
 
     @Override
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping(value = "/{id}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<TaskResponse> loadById(@PathVariable UUID id) {
         return ResponseEntity.ok(taskService.loadById(id));
     }
 
     @Override
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<TaskResponse> create(@RequestBody TaskCreateRequest request) {
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<TaskResponse> create(@Valid @RequestBody TaskCreateRequest request) {
         return ResponseEntity.ok(taskService.create(request));
     }
 
@@ -55,34 +58,36 @@ public class TaskController implements TaskOpenApi {
 
     @Override
     @PatchMapping("/{id}/priority")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<TaskResponse> changePriority(@PathVariable UUID id, @RequestParam PriorityType priorityType) {
         return ResponseEntity.ok(taskService.changePriority(id, priorityType));
     }
 
     @Override
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<TaskResponse> update(@PathVariable UUID id, @RequestBody TaskUpdateRequest request) {
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<TaskResponse> update(@PathVariable UUID id, @Valid @RequestBody TaskUpdateRequest request) {
         return ResponseEntity.ok(taskService.update(id, request));
     }
 
     @Override
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         taskService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    @PatchMapping("/{taskId}/assigners/{assignerId}")
-    public ResponseEntity<TaskResponse> assign(@PathVariable UUID taskId, @PathVariable UUID assignerId) {
-        return ResponseEntity.ok(taskService.assign(taskId, assignerId));
+    @PatchMapping("/{taskId}/assignees/{assigneeId}")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<TaskResponse> assign(@PathVariable UUID taskId, @PathVariable UUID assigneeId) {
+        return ResponseEntity.ok(taskService.assign(taskId, assigneeId));
     }
 
     @Override
     @PatchMapping("/{taskId}/unassigned")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<TaskResponse> unassign(@PathVariable UUID taskId) {
         return ResponseEntity.ok(taskService.unassign(taskId));
     }

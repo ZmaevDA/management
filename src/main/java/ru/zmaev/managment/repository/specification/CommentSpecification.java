@@ -8,10 +8,10 @@ public class CommentSpecification {
 
     public static Specification<Comment> hasTaskAndAuthor(Task task, User author) {
         return (root, query, criteriaBuilder) -> {
-            Predicate taskPredicate = criteriaBuilder.equal(root.get("task").get(Task_.ID), task.getId());
+            Predicate taskPredicate = criteriaBuilder.equal(root.get(Comment_.TASK).get(Task_.ID), task.getId());
 
             if (author != null) {
-                Predicate authorPredicate = criteriaBuilder.equal(root.get("author").get(User_.ID), author.getId());
+                Predicate authorPredicate = criteriaBuilder.equal(root.get(Comment_.AUTHOR).get(User_.ID), author.getId());
                 return criteriaBuilder.and(taskPredicate, authorPredicate);
             } else {
                 return taskPredicate;

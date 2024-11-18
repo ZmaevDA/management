@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import ru.zmaev.managment.controller.handler.ExceptionResponse;
 import ru.zmaev.managment.model.dto.request.CommentRequest;
@@ -50,7 +51,7 @@ public interface CommentOpenApi {
             summary = "Create new comment",
             description = "All access"
     )
-    ResponseEntity<CommentResponse> create(UUID taskId, CommentRequest request);
+    ResponseEntity<CommentResponse> create(UUID taskId, @Valid CommentRequest request);
 
     @ApiResponses(value = {
             @ApiResponse(
@@ -88,7 +89,7 @@ public interface CommentOpenApi {
             summary = "Update comment",
             description = "All access"
     )
-    ResponseEntity<CommentResponse> update(UUID commentId, CommentRequest request);
+    ResponseEntity<CommentResponse> update(UUID commentId, @Valid CommentRequest request);
 
     @ApiResponses(value = {
             @ApiResponse(

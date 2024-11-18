@@ -43,9 +43,7 @@ public class TaskServiceImpl implements TaskService {
 
     private final UserService userService;
     private final TaskRepository taskRepository;
-    private final CommentRepository commentRepository;
     private final TaskMapper taskMapper;
-    private final CommentMapper commentMapper;
     private final UserInfo userInfo;
 
     @Override
@@ -76,9 +74,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public TaskResponse assign(UUID taskId, UUID assignerId) {
+    public TaskResponse assign(UUID taskId, UUID assigneeId) {
         Task task = loadTaskByIdOrThrow(taskId);
-        User user = userService.loadUserByIdOrThrow(assignerId);
+        User user = userService.loadUserByIdOrThrow(assigneeId);
         if (!userInfo.getUserId().equals(user.getKeycloakId()) &&
                 !userInfo.getRole().contains(RoleType.ROLE_ADMIN.name()) &&
                 !userInfo.getUserId().equals(task.getAuthor().getKeycloakId())) {

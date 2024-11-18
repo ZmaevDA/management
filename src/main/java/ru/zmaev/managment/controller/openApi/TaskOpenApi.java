@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import ru.zmaev.managment.controller.handler.ExceptionResponse;
@@ -92,7 +93,7 @@ public interface TaskOpenApi {
             summary = "Create new task",
             description = "All access"
     )
-    ResponseEntity<TaskResponse> create(TaskCreateRequest request);
+    ResponseEntity<TaskResponse> create(@Valid TaskCreateRequest request);
 
     @ApiResponses(value = {
             @ApiResponse(
@@ -302,7 +303,7 @@ public interface TaskOpenApi {
             summary = "Update task",
             description = "All access"
     )
-    ResponseEntity<TaskResponse> update(UUID id, TaskUpdateRequest request);
+    ResponseEntity<TaskResponse> update(UUID id, @Valid TaskUpdateRequest request);
 
     @ApiResponses(value = {
             @ApiResponse(

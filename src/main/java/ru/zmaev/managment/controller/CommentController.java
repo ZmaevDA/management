@@ -1,7 +1,10 @@
 package ru.zmaev.managment.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.zmaev.managment.controller.openApi.CommentOpenApi;
 import ru.zmaev.managment.model.dto.request.CommentRequest;
@@ -14,11 +17,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/comments")
 @RequiredArgsConstructor
+@Validated
 public class CommentController implements CommentOpenApi {
     private final CommentService commentService;
 
     @Override
     @GetMapping("/tasks/{taskId}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<TaskWithCommentsResponse> loadAllCommentsByTaskIdAndAuthorId(
             @PathVariable UUID taskId,
             @RequestParam(required = false) UUID authorId,
@@ -28,18 +33,21 @@ public class CommentController implements CommentOpenApi {
     }
 
     @PostMapping("/tasks/{taskId}")
-    public ResponseEntity<CommentResponse> create(@PathVariable UUID taskId, @RequestBody CommentRequest request) {
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<CommentResponse> create(@PathVariable UUID taskId, @Valid @RequestBody CommentRequest request) {
         return ResponseEntity.ok(commentService.create(taskId, request));
     }
 
     @Override
     @PatchMapping("/{commentId}")
-    public ResponseEntity<CommentResponse> update(@PathVariable UUID commentId, @RequestBody CommentRequest request) {
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<CommentResponse> update(@PathVariable UUID commentId, @Valid @RequestBody CommentRequest request) {
         return ResponseEntity.ok(commentService.update(commentId, request));
     }
 
     @Override
     @DeleteMapping("/{commentId}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<Void> deleteById(@PathVariable UUID commentId) {
         commentService.deleteById(commentId);
         return ResponseEntity.noContent().build();
