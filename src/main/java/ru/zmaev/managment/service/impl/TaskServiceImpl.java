@@ -11,6 +11,7 @@ import ru.zmaev.managment.auth.UserInfo;
 import ru.zmaev.managment.exception.ConflictException;
 import ru.zmaev.managment.exception.ForbiddenException;
 import ru.zmaev.managment.exception.NotFoundException;
+import ru.zmaev.managment.mapper.CommentMapper;
 import ru.zmaev.managment.mapper.TaskMapper;
 import ru.zmaev.managment.model.dto.request.TaskCreateRequest;
 import ru.zmaev.managment.model.dto.request.TaskUpdateRequest;
@@ -21,6 +22,7 @@ import ru.zmaev.managment.model.entity.User;
 import ru.zmaev.managment.model.enums.PriorityType;
 import ru.zmaev.managment.model.enums.RoleType;
 import ru.zmaev.managment.model.enums.StatusType;
+import ru.zmaev.managment.repository.CommentRepository;
 import ru.zmaev.managment.repository.TaskRepository;
 import ru.zmaev.managment.repository.specification.TaskSpecification;
 import ru.zmaev.managment.service.TaskService;
@@ -41,7 +43,9 @@ public class TaskServiceImpl implements TaskService {
 
     private final UserService userService;
     private final TaskRepository taskRepository;
+    private final CommentRepository commentRepository;
     private final TaskMapper taskMapper;
+    private final CommentMapper commentMapper;
     private final UserInfo userInfo;
 
     @Override
@@ -74,9 +78,11 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskResponse assign(UUID taskId, UUID assignerId) {
         Task task = loadTaskByIdOrThrow(taskId);
-        User user = userService.loadUserById(assignerId);
-        if (!userInfo.getUserId().equals(user.getKeycloakId()) && !userInfo.getRole().contains(RoleType.ROLE_ADMIN.name())) {
-            throw new ForbiddenException(TASK_NO_ACCESS, "You can`t assign another person if you are not the administrator");
+        User user = userService.loadUserByIdOrThrow(assignerId);
+        if (!userInfo.getUserId().equals(user.getKeycloakId()) &&
+                !userInfo.getRole().contains(RoleType.ROLE_ADMIN.name()) &&
+                !userInfo.getUserId().equals(task.getAuthor().getKeycloakId())) {
+            throw new ForbiddenException(TASK_NO_ACCESS, "You can`t assign another person if you are not the administrator or author");
         }
         if (task.getAssignee() != null && !userInfo.getRole().contains(RoleType.ROLE_ADMIN.name())) {
             throw new ConflictException(TASK_TAKEN, "This task is already taken");
@@ -142,7 +148,7 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.delete(task);
     }
 
-    private Task loadTaskByIdOrThrow(UUID id) {
+    public Task loadTaskByIdOrThrow(UUID id) {
         return taskRepository.findById(id).orElseThrow(() ->
                 new NotFoundException(TASK_NOT_FOUND, "Task with id " + id + " not found"));
     }

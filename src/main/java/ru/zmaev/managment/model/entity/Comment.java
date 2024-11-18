@@ -1,13 +1,20 @@
 package ru.zmaev.managment.model.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "comment")
+@Setter
+@Getter
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
@@ -21,5 +28,8 @@ public class Comment {
     private String content;
 
     @Column(name = "created_at")
-    private String createdAt;
+    private Instant createdAt;
+
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 }

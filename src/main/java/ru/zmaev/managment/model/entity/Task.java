@@ -44,7 +44,7 @@ public class Task {
     private User author;
 
     @OneToMany(mappedBy = "task")
-    private List<Comment> comment;
+    private List<Comment> comments;
 
     @ManyToOne
     @JoinColumn(name = "assignee_id", referencedColumnName = "id")

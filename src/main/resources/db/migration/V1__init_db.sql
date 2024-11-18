@@ -13,7 +13,8 @@ CREATE TYPE management.STATUS_TYPE AS ENUM
         'WAITING',
         'IN_PROGRESS',
         'DONE',
-        'CANCELED'
+        'CANCELED',
+        'BLOCKED'
         );
 
 CREATE TABLE management._user
@@ -47,6 +48,7 @@ CREATE TABLE management.comment
     author_id  UUID NOT NULL,
     content    TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (task_id) REFERENCES management.task (id) ON DELETE CASCADE,
     FOREIGN KEY (author_id) REFERENCES management._user (id) ON DELETE CASCADE
 );

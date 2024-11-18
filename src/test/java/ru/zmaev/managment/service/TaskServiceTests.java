@@ -146,7 +146,7 @@ public class TaskServiceTests {
         when(mockUserInfo.getUserId()).thenReturn(userId);
         when(mockTaskRepository.findById(taskId)).thenReturn(Optional.of(task));
         when(mockUserInfo.getEmail()).thenReturn(userEmail);
-        when(mockUserService.loadUserById(userId)).thenReturn(user);
+        when(mockUserService.loadUserByIdOrThrow(userId)).thenReturn(user);
         when(mockTaskRepository.save(any(Task.class))).thenReturn(task);
         when(mockTaskMapper.toResponse(task)).thenReturn(taskResponse);
 
@@ -171,7 +171,7 @@ public class TaskServiceTests {
         when(mockUserInfo.getUserId()).thenReturn(userId);
         when(mockTaskRepository.findById(taskId)).thenReturn(Optional.of(task));
         when(mockUserInfo.getEmail()).thenReturn(userEmail);
-        when(mockUserService.loadUserById(userId)).thenReturn(user);
+        when(mockUserService.loadUserByIdOrThrow(userId)).thenReturn(user);
 
         assertThrows(ForbiddenException.class, () -> taskService.assign(taskId, userId));
         verify(mockTaskRepository, times(1)).findById(taskId);
@@ -219,7 +219,7 @@ public class TaskServiceTests {
 
         when(mockUserInfo.getUserId()).thenReturn(userId);
         when(mockTaskRepository.findById(taskId)).thenReturn(Optional.of(task));
-        when(mockUserService.loadUserById(userId)).thenReturn(user);
+        when(mockUserService.loadUserByIdOrThrow(userId)).thenReturn(user);
 
         assertThrows(ForbiddenException.class, () -> taskService.assign(taskId, userId));
         verify(mockTaskRepository, times(1)).findById(taskId);
@@ -233,7 +233,7 @@ public class TaskServiceTests {
 
         when(mockUserInfo.getUserId()).thenReturn(userId);
         when(mockTaskRepository.findById(taskId)).thenReturn(Optional.of(task));
-        when(mockUserService.loadUserById(userId)).thenReturn(user);
+        when(mockUserService.loadUserByIdOrThrow(userId)).thenReturn(user);
         when(mockTaskRepository.save(any(Task.class))).thenReturn(task);
         when(mockTaskMapper.toResponse(task)).thenReturn(taskResponse);
 
@@ -258,7 +258,7 @@ public class TaskServiceTests {
 
         when(mockUserInfo.getUserId()).thenReturn(userId);
         when(mockTaskRepository.findById(taskId)).thenReturn(Optional.of(task));
-        when(mockUserService.loadUserById(userId)).thenReturn(user);
+        when(mockUserService.loadUserByIdOrThrow(userId)).thenReturn(user);
 
         assertThrows(ForbiddenException.class, () -> taskService.changePriority(taskId, PriorityType.HIGH));
         verify(mockTaskRepository, times(1)).findById(taskId);
@@ -272,7 +272,7 @@ public class TaskServiceTests {
 
         when(mockUserInfo.getUserId()).thenReturn(userId);
         when(mockTaskRepository.findById(taskId)).thenReturn(Optional.of(task));
-        when(mockUserService.loadUserById(userId)).thenReturn(user);
+        when(mockUserService.loadUserByIdOrThrow(userId)).thenReturn(user);
         when(mockTaskRepository.save(any(Task.class))).thenReturn(task);
         when(mockTaskMapper.toResponse(task)).thenReturn(taskResponse);
 
@@ -297,7 +297,7 @@ public class TaskServiceTests {
 
         when(mockUserInfo.getUserId()).thenReturn(userId);
         when(mockTaskRepository.findById(taskId)).thenReturn(Optional.of(task));
-        when(mockUserService.loadUserById(userId)).thenReturn(user);
+        when(mockUserService.loadUserByIdOrThrow(userId)).thenReturn(user);
 
         assertThrows(ForbiddenException.class, () -> taskService.changeStatus(taskId, StatusType.BLOCKED));
         verify(mockTaskRepository, times(1)).findById(taskId);
@@ -310,7 +310,7 @@ public class TaskServiceTests {
 
         when(mockTaskRepository.findById(taskId)).thenReturn(Optional.of(task));
         when(mockTaskMapper.toEntity(any(TaskUpdateRequest.class))).thenReturn(task);
-        when(mockUserService.loadUserById(userId)).thenReturn(user);
+        when(mockUserService.loadUserByIdOrThrow(userId)).thenReturn(user);
         when(mockTaskRepository.save(any(Task.class))).thenReturn(task);
         when(mockTaskMapper.toResponse(task)).thenReturn(taskResponse);
 
@@ -329,7 +329,7 @@ public class TaskServiceTests {
 
         when(mockTaskRepository.findById(taskId)).thenReturn(Optional.of(task));
         when(mockTaskMapper.toEntity(any(TaskUpdateRequest.class))).thenReturn(task);
-        when(mockUserService.loadUserById(userId)).thenReturn(user);
+        when(mockUserService.loadUserByIdOrThrow(userId)).thenReturn(user);
 
         assertThrows(ForbiddenException.class, () -> taskService.update(taskId, taskUpdateRequest));
         verify(mockTaskRepository, times(1)).findById(taskId);

@@ -26,7 +26,7 @@ public class TaskController implements TaskOpenApi {
     @Override
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<Page<TaskResponse>> loadAll(@RequestBody(required = false) TaskFilterRequest filter,
+    public ResponseEntity<Page<TaskResponse>> loadAll(@ModelAttribute TaskFilterRequest filter,
                                                       @RequestParam(defaultValue = "0") int pageNumber,
                                                       @RequestParam(defaultValue = "10") int pageSize) {
         return ResponseEntity.ok(taskService.loadAll(filter, pageNumber, pageSize));

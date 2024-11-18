@@ -16,9 +16,6 @@ public class TaskSpecification {
         return (root, query, criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.conjunction();
 
-            if (filterRequest == null) {
-                return predicate;
-            }
             if (filterRequest.getId() != null) {
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get(Task_.ID),
                         UUID.fromString(filterRequest.getId())));

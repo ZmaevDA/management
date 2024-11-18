@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.zmaev.managment.controller.openApi.AuthOpenApi;
 import ru.zmaev.managment.model.dto.response.UserKeycloakDataResponse;
 import ru.zmaev.managment.model.dto.response.UserResponse;
 import ru.zmaev.managment.auth.AuthService;
@@ -12,7 +13,7 @@ import ru.zmaev.managment.auth.AuthService;
 @RestController
 @RequestMapping("/v1/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthOpenApi {
 
     private final AuthService authService;
 
