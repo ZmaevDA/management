@@ -178,7 +178,7 @@ public class TaskIntegrationTests extends PostgresTestContainer {
             "/sql/insert_tasks.sql"
     })
     public void assign() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.patch(TASK_API_PATH + "/" + unassignedTaskId + "/assigners/" + userId)
+        mockMvc.perform(MockMvcRequestBuilders.patch(TASK_API_PATH + "/" + unassignedTaskId + "/assignees/" + userId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));

@@ -40,6 +40,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponse loadById(UUID id) {
+        log.info("Loading user by id: {}", id);
+        return userMapper.toResponse(loadUserByIdOrThrow(id));
+    }
+
+    @Override
     public User loadUserByEmailOrThrow(String email) {
        return userRepository.findByEmail(email).orElseThrow(
                () -> new NotFoundException(USER_NOT_FOUND, "User with email " + email + " not found")

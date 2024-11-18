@@ -11,6 +11,8 @@ public interface UserService {
 
     UserResponse loadCurrentUserData();
 
+    UserResponse loadById(UUID id);
+
     User loadUserByEmailOrThrow(String email);
 
     User loadUserByIdOrThrow(UUID id);
