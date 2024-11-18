@@ -5,5 +5,6 @@ public enum StatusType {
     WAITING,
     IN_PROGRESS,
     DONE,
+    BLOCKED,
     CANCELED
 }

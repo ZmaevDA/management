@@ -75,7 +75,10 @@ public class TaskServiceImpl implements TaskService {
     public TaskResponse assign(UUID taskId, UUID assignerId) {
         Task task = loadTaskByIdOrThrow(taskId);
         User user = userService.loadUserById(assignerId);
-        if (task.getAssignee() != null && !userInfo.getRole().contains(RoleType.ADMIN.getKeycloakRoleName())) {
+        if (!userInfo.getUserId().equals(user.getKeycloakId()) && !userInfo.getRole().contains(RoleType.ROLE_ADMIN.name())) {
+            throw new ForbiddenException(TASK_NO_ACCESS, "You can`t assign another person if you are not the administrator");
+        }
+        if (task.getAssignee() != null && !userInfo.getRole().contains(RoleType.ROLE_ADMIN.name())) {
             throw new ConflictException(TASK_TAKEN, "This task is already taken");
         }
         task.setAssignee(user);
@@ -87,13 +90,10 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskResponse unassign(UUID taskId) {
         Task task = loadTaskByIdOrThrow(taskId);
-        User user = userService.loadUserByEmailOrThrow(userInfo.getEmail());
         if (task.getAssignee() == null) {
             throw new ConflictException(TASK_NOT_TAKEN, "This task is not taken");
         }
-        if (!task.getAssignee().equals(user) && !userInfo.getRole().contains(RoleType.ADMIN.getKeycloakRoleName())) {
-            throw new ConflictException(TASK_NO_ACCESS, "You are not assigned to this task and do not have admin privileges.");
-        }
+        checkAuthorAssignerAdminAccessOrThrow(task);
         task.setAssignee(null);
         Task savedTask = taskRepository.save(task);
         return taskMapper.toResponse(savedTask);
@@ -103,7 +103,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskResponse changeStatus(UUID id, StatusType statusType) {
         Task task = loadTaskByIdOrThrow(id);
-        checkAuthorOrAdminAccessOrThrow(task);
+        checkAuthorAssignerAdminAccessOrThrow(task);
         task.setStatus(statusType);
         task.setUpdatedAt(Instant.now());
         Task savedTask = taskRepository.save(task);
@@ -114,7 +114,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskResponse changePriority(UUID id, PriorityType priorityType) {
         Task task = loadTaskByIdOrThrow(id);
-        checkAuthorOrAdminAccessOrThrow(task);
+        checkAuthorAssignerAdminAccessOrThrow(task);
         task.setPriority(priorityType);
         task.setUpdatedAt(Instant.now());
         Task savedTask = taskRepository.save(task);
@@ -125,7 +125,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskResponse update(UUID id, TaskUpdateRequest request) {
         Task presentedTask = loadTaskByIdOrThrow(id);
-        checkAuthorOrAdminAccessOrThrow(presentedTask);
+        checkAuthorAssignerAdminAccessOrThrow(presentedTask);
         Task task = taskMapper.toEntity(request);
         task.setId(id);
         Task savedTask = taskRepository.save(task);
@@ -136,7 +136,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public void deleteById(UUID id) {
         Task task = loadTaskByIdOrThrow(id);
-        checkAuthorOrAdminAccessOrThrow(task);
+        checkAuthorAssignerAdminAccessOrThrow(task);
         taskRepository.delete(task);
     }
 
@@ -145,10 +145,12 @@ public class TaskServiceImpl implements TaskService {
                 new NotFoundException(TASK_NOT_FOUND, "Task with id " + id + " not found"));
     }
 
-    private void checkAuthorOrAdminAccessOrThrow(Task task) {
+    private void checkAuthorAssignerAdminAccessOrThrow(Task task) {
         if (!Objects.equals(userInfo.getUserId(), task.getAuthor().getKeycloakId()) &&
-                !userInfo.getRole().contains(RoleType.ADMIN.getKeycloakRoleName())) {
-            throw new ForbiddenException(TASK_NO_ACCESS, "You are not the author and do not have admin privileges.");
+                !userInfo.getRole().contains(RoleType.ROLE_ADMIN.name()) &&
+                !Objects.equals(userInfo.getUserId(), task.getAssignee().getKeycloakId())
+        ) {
+            throw new ForbiddenException(TASK_NO_ACCESS, "You are not the author or assigner or do not have admin privileges.");
         }
     }
 }

@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum RoleType {
-    USER("user"),
-    ADMIN("admin");
+    ROLE_USER("user"),
+    ROLE_ADMIN("admin");
 
     private final String keycloakRoleName;
 
