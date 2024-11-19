@@ -95,15 +95,6 @@
         "attributes": {}
       },
       {
-        "id": "e6ca868a-d349-40bc-afc6-ac0195c8bb1e",
-        "name": "editor",
-        "description": "",
-        "composite": false,
-        "clientRole": false,
-        "containerId": "4233d154-f3b0-4ed0-85d9-4595d3cca62e",
-        "attributes": {}
-      },
-      {
         "id": "b0fa1006-c893-4eb9-868e-96aca308fa0e",
         "name": "user",
         "description": "",
@@ -1234,23 +1225,6 @@
             "access.token.claim": "true",
             "claim.name": "updated_at",
             "jsonType.label": "long"
-          }
-        },
-        {
-          "id": "6618eaa7-740d-472b-b049-df9f60f95149",
-          "name": "isDeleted",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-attribute-mapper",
-          "consentRequired": false,
-          "config": {
-            "aggregate.attrs": "false",
-            "userinfo.token.claim": "true",
-            "multivalued": "false",
-            "user.attribute": "isDeleted",
-            "id.token.claim": "true",
-            "access.token.claim": "true",
-            "claim.name": "isDeleted",
-            "jsonType.label": "boolean"
           }
         },
         {
@@ -2403,9 +2377,9 @@
       "username": "admin",
       "enabled": true,
       "emailVerified": true,
-      "firstName": "First",
-      "lastName": "User",
-      "email": "mrressrus@gmail.com",
+      "firstName": "admin",
+      "lastName": "admin",
+      "email": "admin@admin.com",
       "credentials": [
         {
           "type": "password",
@@ -2413,35 +2387,9 @@
           "temporary": false
         }
       ],
-      "attributes": {
-        "isDeleted": "false"
-      },
       "realmRoles": [
         "default-roles-management",
         "admin"
-      ]
-    },
-    {
-      "id": "7312bd65-387f-468f-a930-b02dd2e9ae70",
-      "username": "user",
-      "enabled": true,
-      "emailVerified": true,
-      "firstName": "Second",
-      "lastName": "User",
-      "email": "dzmaev@yandex.ru",
-      "credentials": [
-        {
-          "type": "password",
-          "value": "123",
-          "temporary": false
-        }
-      ],
-      "attributes": {
-        "isDeleted": "false"
-      },
-      "realmRoles": [
-        "default-roles-management",
-        "user"
       ]
     }
   ]

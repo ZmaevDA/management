@@ -35,7 +35,7 @@ services:
       - keycloak-network
 
   keycloak:
-    image: custom-keycloak:latest
+    image: zhmash/custom-keycloak:latest
     container_name: keycloak
     environment:
       KC_DB_URL: jdbc:postgresql://keycloak-postgres:5432/postgres
